@@ -880,9 +880,13 @@ class OpenIDConnectClient
         $authorizationHeader = null;
         # Consider Basic authentication if provider config is set this way
         if ($this->supportsAuthMethod('client_secret_basic', $token_endpoint_auth_methods_supported)) {
-            $authorizationHeader = 'Authorization: Basic ' . base64_encode(urlencode($this->clientID) . ':' . urlencode($this->clientSecret));
-            unset($token_params['client_secret'], $token_params['client_id']);
-        }
+    $clientID = $this->clientID ?? '';
+    $clientSecret = $this->clientSecret ?? '';
+    $authorizationHeader = 'Authorization: Basic ' . base64_encode(urlencode($clientID) . ':' . urlencode($clientSecret));
+    unset($token_params['client_secret']);
+    unset($token_params['client_id']);
+}
+
 
         // When there is a private key jwt generator, and it is supported then use it as client authentication
         if ($this->privateKeyJwtGenerator !== null && $this->supportsAuthMethod('private_key_jwt', $token_endpoint_auth_methods_supported)) {
